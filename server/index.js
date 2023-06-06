@@ -10,7 +10,7 @@ const uri = `mongodb+srv://codeayub:${process.env.DBPassword}@cluster0.cqhg8gl.m
 
 // init
 const app = express();
-const port = 9000;
+const port = 3000;
 // middleware
 
 app.use(express.json())

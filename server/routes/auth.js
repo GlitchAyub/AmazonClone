@@ -2,10 +2,8 @@ const express = require('express');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs')
 const authRouter = express.Router();
+const jwt = require('jsonwebtoken');
 
-authRouter.get('/user',(req,res)=>{
-    res.json({msg:'Ayub'})
-})
 
 authRouter.post('/api/signup',async (req,res)=>{
     try {
@@ -30,6 +28,27 @@ authRouter.post('/api/signup',async (req,res)=>{
     }
     
     
+})
+
+// SIGNIN ROUTE
+// Exercise
+authRouter.post('/api/signin',async(req,res)=>{
+try {
+    const{email,password}= req.body;
+    const user =await User.findOne({email})
+    if(!user){
+        return res.status(400).json({msg:"User with this email does not exist"},);
+    }
+    const isMatch = await bcrypt.compare(password,user.password);
+    if(!isMatch){
+        return res.status(400).json({msg:"Incorrect Password "},);
+    }
+   const token =  jwt.sign({id:'_id'},'passwordKey');
+   res.json({token,...user._doc});
+} catch (error) {
+    res.status(500).json(error.message)
+    
+}
 })
 
 module.exports =  authRouter;
